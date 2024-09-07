@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "5ff762a5-7485-4c5b-a8a7-1286e19def6e",
+		"name": "task_manager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "24465459"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"u1\",\r\n  \"password\": \"password\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/auth/login"
+			},
+			"response": []
+		},
+		{
+			"name": "create new task",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InUxIiwiaWF0IjoxNzI1NzAxNDcyLCJleHAiOjE3MjU3MDUwNzJ9.Msk5FXG4qDxNM48dyfg0DhQlOTUcd5tFhf1TlbEehw0"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"description\": \" Project 3\",\r\n  \"dueDate\": \"2024-09-10\",\r\n//   \"assigneeId\": 2,\r\n//   \"teamId\":1,\r\n  \"status\": \"pending\"\r\n}\r\n{\r\n    // \"assigneeId\": 2,\r\n    // \"teamId\": 1\r\n    // \"status\":\"completed\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/tasks/"
+			},
+			"response": []
+		},
+		{
+			"name": "SignUp",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"user3\",\r\n    \"username\": \"u3\",\r\n    \"password\": \"password\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/auth/signup"
+			},
+			"response": []
+		},
+		{
+			"name": "create new team",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InUxIiwiaWF0IjoxNzI1Njk2MzQ4LCJleHAiOjE3MjU2OTk5NDh9.idPUUBEQzgAQHZ7iHH-bfdfebx1BZqwvALybHtCzj-0"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Developer team\",\r\n  \"members\": [1,2]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/team"
+			},
+			"response": []
+		},
+		{
+			"name": "get all tasks",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/tasks/"
+			},
+			"response": []
+		},
+		{
+			"name": "update a task",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"status\":\"Completed\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/tasks/3"
+			},
+			"response": []
+		},
+		{
+			"name": "Assign Task to a team member",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    // \"assigneeId\": 2,\r\n    // \"teamId\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/tasks/3/assign"
+			},
+			"response": []
+		},
+		{
+			"name": "get all teams",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/team"
+			},
+			"response": []
+		}
+	]
+}
