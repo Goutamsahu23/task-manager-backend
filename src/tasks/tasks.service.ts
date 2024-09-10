@@ -16,45 +16,52 @@ export class TasksService {
     @InjectRepository(TeamMember)
     private teamMemberRepository: Repository<TeamMember>,
     @InjectRepository(User)
-    private userRepository:Repository<User>
-  ) {}
+    private userRepository: Repository<User>
+  ) { }
 
- 
+
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
     const { description, dueDate, assigneeId, teamId } = createTaskDto;
-  
+
     let assignee = null;
     let team = null;
 
-    if(dueDate.getTime() < Date.now()){
+    // Parse the dueDate string into a Date object
+    const parsedDueDate = new Date(dueDate);
+
+    if (isNaN(parsedDueDate.getTime())) {
+      throw new BadRequestException('Invalid due date');
+    }
+
+    if (parsedDueDate.getTime() < Date.now()) {
       throw new BadRequestException('Due date cannot be in the past');
     }
-  
+
     // If teamId is provided, validate the team
     if (teamId) {
       team = await this.teamMemberRepository.findOne({
         where: { id: teamId },
         relations: ['users'], // Fetch the users in the team
       });
-  
+
       if (!team) {
         throw new NotFoundException(`Team with ID ${teamId} not found`);
       }
     }
-  
+
     // If assigneeId is provided, validate if the assignee belongs to the team
     if (assigneeId) {
       assignee = await this.userRepository.findOne({ where: { id: assigneeId } });
-  
+
       if (!assignee) {
         throw new NotFoundException(`User with ID ${assigneeId} not found`);
       }
-  
+
       if (team && !team.users.some(user => user.id === assigneeId)) {
         throw new BadRequestException(`User with ID ${assigneeId} does not belong to team with ID ${teamId}`);
       }
     }
-  
+
     // Create and save the task
     const task = this.taskRepository.create({
       description,
@@ -62,16 +69,16 @@ export class TasksService {
       assignee, // Assignee is optional
       team, // Team is optional
     });
-  
+
     return this.taskRepository.save(task);
   }
-  
+
 
   async findAllTasks(): Promise<Task[]> {
     return this.taskRepository.find(
       {
-      relations: ['assignee', 'assignee.team'],
-    });
+        relations: ['assignee', 'assignee.team'],
+      });
   }
 
   async assignTask(taskId: number, assigneeId: number, teamId: number): Promise<Task> {
@@ -80,36 +87,36 @@ export class TasksService {
     if (!task) {
       throw new NotFoundException('Task not found');
     }
-  
+
     // Find the team by teamId
     const team = await this.teamMemberRepository.findOne({
       where: { id: teamId },
-      relations: ['users'], 
+      relations: ['users'],
     });
     if (!team) {
       throw new NotFoundException(`Team with ID ${teamId} not found`);
     }
-  
+
     const assignee = await this.userRepository.findOne({
       where: { id: assigneeId },
     });
     if (!assignee) {
       throw new NotFoundException('Assignee not found');
     }
-  
+
     // Check if the assignee belongs to the team
     const isUserInTeam = team.users.some(user => user.id === assigneeId);
     if (!isUserInTeam) {
       throw new BadRequestException(`User with ID ${assigneeId} does not belong to team with ID ${teamId}`);
     }
-  
+
     // Assign the task to the assignee and team
     task.assignee = assignee;
     task.team = team;
-  
+
     return this.taskRepository.save(task);
   }
-  
+
 
   async updateTask(
     taskId: number,
@@ -124,7 +131,7 @@ export class TasksService {
 
     return this.taskRepository.findOne({
       where: { id: taskId },
-      relations: ['assignee', 'team'], 
+      relations: ['assignee', 'team'],
     });
   }
 }
