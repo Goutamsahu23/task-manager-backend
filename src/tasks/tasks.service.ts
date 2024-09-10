@@ -25,6 +25,10 @@ export class TasksService {
   
     let assignee = null;
     let team = null;
+
+    if(dueDate.getTime() < Date.now()){
+      throw new BadRequestException('Due date cannot be in the past');
+    }
   
     // If teamId is provided, validate the team
     if (teamId) {
